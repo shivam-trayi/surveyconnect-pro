@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
 import { SignupForm, FormErrors } from '@/types';
 import { countries } from '@/data/mock';
 
 export default function Signup() {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { signup, isLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<SignupForm>({
     fullName: '',
@@ -75,27 +76,16 @@ export default function Signup() {
     
     if (!validateForm()) return;
 
-    setIsLoading(true);
-    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast({
-        title: "Account created successfully!",
-        description: "Please check your email to verify your account.",
+      await signup({
+        name: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+        company: formData.company,
+        country: formData.country,
       });
-      
-      // Redirect to login
-      navigate('/login');
     } catch (error) {
-      toast({
-        title: "Signup failed",
-        description: "An error occurred while creating your account. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
+      // Error handling is done in the auth context
     }
   };
 
@@ -108,14 +98,24 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-gradient-hero flex items-center justify-center p-4"
+    >
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden -z-10">
         <div className="absolute top-1/4 right-1/4 w-64 h-64 gradient-primary rounded-full opacity-10 blur-3xl"></div>
         <div className="absolute bottom-1/4 left-1/4 w-96 h-96 gradient-accent rounded-full opacity-10 blur-3xl"></div>
       </div>
 
-      <div className="w-full max-w-lg">
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+        className="w-full max-w-lg"
+      >
         {/* Header */}
         <div className="text-center mb-8">
           <Link
@@ -136,7 +136,12 @@ export default function Signup() {
         </div>
 
         {/* Signup Form */}
-        <Card className="p-8 shadow-elevated border-border/20 bg-background/95 backdrop-blur-sm">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <Card className="p-8 shadow-elevated border-border/20 bg-background/95 backdrop-blur-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -291,6 +296,7 @@ export default function Signup() {
             </p>
           </div>
         </Card>
+        </motion.div>
 
         {/* Back to Home */}
         <div className="text-center mt-6">
@@ -301,7 +307,7 @@ export default function Signup() {
             ← Back to Home
           </Link>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

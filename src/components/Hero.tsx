@@ -1,9 +1,15 @@
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { clientLogos } from '@/data/mock';
 
 const HeroGraphic = () => (
-  <div className="relative w-full h-64 lg:h-80 animate-fade-up">
+  <motion.div 
+    initial={{ opacity: 0, scale: 0.8 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.8, delay: 0.3 }}
+    className="relative w-full h-64 lg:h-80"
+  >
     <div className="absolute inset-0 gradient-hero rounded-3xl">
       <div className="relative w-full h-full flex items-center justify-center">
         {/* Globe/Network Visualization */}
@@ -31,7 +37,7 @@ const HeroGraphic = () => (
         </div>
       </div>
     </div>
-  </div>
+  </motion.div>
 );
 
 export default function Hero() {
@@ -48,53 +54,94 @@ export default function Hero() {
       <div className="container mx-auto px-4 lg:px-6">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left Column - Content */}
-          <div className="space-y-8 animate-fade-up">
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="space-y-8"
+          >
             <div className="space-y-6">
-              <h1 className="text-4xl lg:text-6xl font-bold text-balance leading-tight">
-                Expand Your Reach with{' '}
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.1 }}
+                className="text-4xl lg:text-6xl font-bold text-balance leading-tight"
+              >
+                Partner with us to grow your{' '}
                 <span className="text-gradient">Global Market Research</span>{' '}
-                Projects
-              </h1>
-              <p className="text-lg lg:text-xl text-muted-foreground text-balance max-w-2xl">
+                business
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="text-lg lg:text-xl text-muted-foreground text-balance max-w-2xl"
+              >
                 Join our vendor network, connect with top researchers, manage surveys, 
                 and grow revenue—securely and efficiently.
-              </p>
+              </motion.p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                onClick={() => navigate('/signup')}
-                className="gradient-primary text-white shadow-glow hover:shadow-elevated hover:-translate-y-1 transition-all duration-300 h-12 px-10 text-base font-semibold"
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="flex flex-col sm:flex-row gap-4"
+            >
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                Sign Up Free
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => navigate('/login')}
-                className="font-semibold h-12 px-10 text-base"
+                <Button
+                  size="lg"
+                  onClick={() => navigate('/signup')}
+                  className="gradient-primary text-white shadow-glow hover:shadow-elevated hover:-translate-y-1 transition-all duration-300 h-12 px-10 text-base font-semibold"
+                >
+                  Get Started
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                Login
-              </Button>
-            </div>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="font-semibold h-12 px-10 text-base"
+                >
+                  Learn More
+                </Button>
+              </motion.div>
+            </motion.div>
 
             {/* Trust Strip */}
-            <div className="pt-8">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="pt-8"
+            >
               <p className="text-sm text-muted-foreground mb-6">Trusted by leading research firms worldwide</p>
               <div className="flex flex-wrap items-center gap-6 lg:gap-8 opacity-60 hover:opacity-80 transition-opacity">
-                {clientLogos.map((logo) => (
-                  <div key={logo.id} className="flex-shrink-0">
+                {clientLogos.map((logo, index) => (
+                  <motion.div 
+                    key={logo.id} 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                    className="flex-shrink-0"
+                  >
                     <img
                       src={logo.src}
                       alt={logo.name}
                       className="h-8 w-auto filter grayscale hover:grayscale-0 transition-all duration-300"
                     />
-                  </div>
+                  </motion.div>
                 ))}
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Right Column - Visual */}
           <div className="order-first lg:order-last">
