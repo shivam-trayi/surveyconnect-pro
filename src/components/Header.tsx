@@ -89,6 +89,13 @@ export default function Header() {
             >
               How It Works
             </button>
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/canvas')}
+              className="text-foreground/80 hover:text-primary transition-colors font-medium"
+            >
+              Design Studio
+            </Button>
             <button
               onClick={() => scrollToSection('contact')}
               className="text-foreground/80 hover:text-primary transition-colors font-medium"
@@ -161,6 +168,12 @@ export default function Header() {
                 className="block w-full text-left px-4 py-2 text-foreground/80 hover:text-primary transition-colors font-medium"
               >
                 How It Works
+              </button>
+              <button
+                onClick={() => navigate('/canvas')}
+                className="block w-full text-left px-4 py-2 text-foreground/80 hover:text-primary transition-colors font-medium"
+              >
+                Design Studio
               </button>
               <button
                 onClick={() => scrollToSection('contact')}

@@ -7,6 +7,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
+import CanvasStudio from "./pages/CanvasStudio";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/canvas" element={<CanvasStudio />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
