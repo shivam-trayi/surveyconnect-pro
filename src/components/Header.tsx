@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -35,6 +37,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { resolvedTheme, toggleTheme } = useTheme();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,8 +57,20 @@ export default function Header() {
     setIsMobileMenuOpen(false);
   };
 
+  const handleAuthAction = () => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    } else {
+      navigate('/login');
+    }
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <header
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? 'bg-background/95 backdrop-blur-md shadow-medium border-b border-border/50'
@@ -65,147 +80,288 @@ export default function Header() {
       <div className="container mx-auto px-4 lg:px-6">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center space-x-2 font-bold text-xl text-foreground hover:text-primary transition-colors"
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">VP</span>
-            </div>
-            <span className="hidden sm:block">VendorPortal</span>
-          </Link>
+            <Link
+              to="/"
+              className="flex items-center space-x-2 font-bold text-xl text-foreground hover:text-primary transition-colors"
+            >
+              <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">VP</span>
+              </div>
+              <span className="hidden sm:block">VendorPortal</span>
+            </Link>
+          </motion.div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => scrollToSection('features')}
               className="text-foreground/80 hover:text-primary transition-colors font-medium"
             >
               Features
-            </button>
-            <button
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => scrollToSection('how-it-works')}
               className="text-foreground/80 hover:text-primary transition-colors font-medium"
             >
               How It Works
-            </button>
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/canvas')}
-              className="text-foreground/80 hover:text-primary transition-colors font-medium"
+            </motion.button>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              Design Studio
-            </Button>
-            <button
+              <Button
+                variant="ghost"
+                onClick={() => navigate('/canvas')}
+                className="text-foreground/80 hover:text-primary transition-colors font-medium"
+              >
+                Design Studio
+              </Button>
+            </motion.div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => scrollToSection('contact')}
               className="text-foreground/80 hover:text-primary transition-colors font-medium"
             >
               Contact
-            </button>
+            </motion.button>
           </nav>
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-              className="w-9 h-9 rounded-lg"
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
-              {resolvedTheme === 'light' ? <MoonIcon /> : <SunIcon />}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => navigate('/login')}
-              className="font-medium"
-            >
-              Login
-            </Button>
-            <Button
-              onClick={() => navigate('/signup')}
-              className="gradient-primary text-white font-medium hover:shadow-glow transition-all duration-300"
-            >
-              Sign Up Free
-            </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+                className="w-9 h-9 rounded-lg"
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    key={resolvedTheme}
+                    initial={{ y: -20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: 20, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {resolvedTheme === 'light' ? <MoonIcon /> : <SunIcon />}
+                  </motion.div>
+                </AnimatePresence>
+              </Button>
+            </motion.div>
+            
+            {!isAuthenticated ? (
+              <>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate('/login')}
+                    className="font-medium"
+                  >
+                    Login
+                  </Button>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    onClick={() => navigate('/signup')}
+                    className="gradient-primary text-white font-medium hover:shadow-glow transition-all duration-300"
+                  >
+                    Sign Up Free
+                  </Button>
+                </motion.div>
+              </>
+            ) : (
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button
+                  onClick={() => navigate('/dashboard')}
+                  className="gradient-primary text-white font-medium hover:shadow-glow transition-all duration-300"
+                >
+                  Dashboard
+                </Button>
+              </motion.div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center space-x-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-              className="w-9 h-9 rounded-lg"
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
-              {resolvedTheme === 'light' ? <MoonIcon /> : <SunIcon />}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Toggle menu"
-              className="w-9 h-9 rounded-lg"
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+                className="w-9 h-9 rounded-lg"
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    key={resolvedTheme}
+                    initial={{ rotate: -180, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 180, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {resolvedTheme === 'light' ? <MoonIcon /> : <SunIcon />}
+                  </motion.div>
+                </AnimatePresence>
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
-              {isMobileMenuOpen ? <XIcon /> : <MenuIcon />}
-            </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label="Toggle menu"
+                className="w-9 h-9 rounded-lg"
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    key={isMobileMenuOpen ? 'close' : 'menu'}
+                    initial={{ rotate: -180, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 180, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {isMobileMenuOpen ? <XIcon /> : <MenuIcon />}
+                  </motion.div>
+                </AnimatePresence>
+              </Button>
+            </motion.div>
           </div>
         </div>
 
         {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-md">
-            <nav className="py-4 space-y-4">
-              <button
-                onClick={() => scrollToSection('features')}
-                className="block w-full text-left px-4 py-2 text-foreground/80 hover:text-primary transition-colors font-medium"
-              >
-                Features
-              </button>
-              <button
-                onClick={() => scrollToSection('how-it-works')}
-                className="block w-full text-left px-4 py-2 text-foreground/80 hover:text-primary transition-colors font-medium"
-              >
-                How It Works
-              </button>
-              <button
-                onClick={() => navigate('/canvas')}
-                className="block w-full text-left px-4 py-2 text-foreground/80 hover:text-primary transition-colors font-medium"
-              >
-                Design Studio
-              </button>
-              <button
-                onClick={() => scrollToSection('contact')}
-                className="block w-full text-left px-4 py-2 text-foreground/80 hover:text-primary transition-colors font-medium"
-              >
-                Contact
-              </button>
-              <div className="flex flex-col space-y-2 px-4 pt-4 border-t border-border/50">
-                <Button
-                  variant="outline"
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-md overflow-hidden"
+            >
+              <nav className="py-4 space-y-4">
+                <motion.button
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                  onClick={() => scrollToSection('features')}
+                  className="block w-full text-left px-4 py-2 text-foreground/80 hover:text-primary transition-colors font-medium"
+                >
+                  Features
+                </motion.button>
+                <motion.button
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.15 }}
+                  onClick={() => scrollToSection('how-it-works')}
+                  className="block w-full text-left px-4 py-2 text-foreground/80 hover:text-primary transition-colors font-medium"
+                >
+                  How It Works
+                </motion.button>
+                <motion.button
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
                   onClick={() => {
-                    navigate('/login');
+                    navigate('/canvas');
                     setIsMobileMenuOpen(false);
                   }}
-                  className="font-medium"
+                  className="block w-full text-left px-4 py-2 text-foreground/80 hover:text-primary transition-colors font-medium"
                 >
-                  Login
-                </Button>
-                <Button
-                  onClick={() => {
-                    navigate('/signup');
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="gradient-primary text-white font-medium"
+                  Design Studio
+                </motion.button>
+                <motion.button
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.25 }}
+                  onClick={() => scrollToSection('contact')}
+                  className="block w-full text-left px-4 py-2 text-foreground/80 hover:text-primary transition-colors font-medium"
                 >
-                  Sign Up Free
-                </Button>
-              </div>
-            </nav>
-          </div>
-        )}
+                  Contact
+                </motion.button>
+                
+                <div className="flex flex-col space-y-2 px-4 pt-4 border-t border-border/50">
+                  {!isAuthenticated ? (
+                    <>
+                      <motion.div
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                      >
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            navigate('/login');
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="font-medium w-full"
+                        >
+                          Login
+                        </Button>
+                      </motion.div>
+                      <motion.div
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.35 }}
+                      >
+                        <Button
+                          onClick={() => {
+                            navigate('/signup');
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="gradient-primary text-white font-medium w-full"
+                        >
+                          Sign Up Free
+                        </Button>
+                      </motion.div>
+                    </>
+                  ) : (
+                    <motion.div
+                      initial={{ x: -20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      <Button
+                        onClick={handleAuthAction}
+                        className="gradient-primary text-white font-medium w-full"
+                      >
+                        Dashboard
+                      </Button>
+                    </motion.div>
+                  )}
+                </div>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </header>
+    </motion.header>
   );
 }
