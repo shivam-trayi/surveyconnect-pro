@@ -60,3 +60,24 @@ export interface SignupForm {
 export interface ResetPasswordForm {
   email: string;
 }
+
+
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface SignupData {
+  name: string;
+  email: string;
+  password?: string;
+}
+
+export interface AuthContextType {
+  user: User | null;
+  login: (email: string, password: string) => Promise<void>;
+  signup: (data: SignupData) => Promise<void>;
+  logout: () => void;
+}
