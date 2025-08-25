@@ -1,6 +1,6 @@
 name: Trunk Frontend Live Preview
 
-on:                       # <-- Ye required property
+on:
   push:
     branches:
       - trunk
