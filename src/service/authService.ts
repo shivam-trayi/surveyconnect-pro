@@ -1,41 +1,8 @@
-
-
-
-export interface ApiResponse {
-  status: string;
-  message: string;
-  data: {
-    token: string;
-  };
-  timestamp: string;
-}
-
-export interface JwtPayload {
-  id: number;
-  username: string;
-  roleId: number;
-  exp: number;
-  iat: number;
-}
-
-export interface User {
-  id: number;
-  username: string;
-  roleId: number;
-}
-
-export interface SignupData {
-  name: string;
-  email: string;
-  password?: string;
-  company?: string;
-  country?: string;
-}
-
-const API_BASE = import.meta.env.VITE_API_BASE; // http://localhost:5000/api/v1/
+import { ApiResponse } from "@/types";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export const authService = {
-  login: async (username: string, password: string): Promise<ApiResponse> => {
+  login: async (username: string, password: string): Promise<ApiResponse<{ token: string }>> => {
     const res = await fetch(`${API_BASE}auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -43,30 +10,27 @@ export const authService = {
       credentials: "include",
     });
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Login failed");
-    return data as ApiResponse;
+    const data = (await res.json()) as ApiResponse<{ token: string }>;
+    if (!data.success) throw new Error(data.message || "Login failed");
+    return data;
   },
 
-  logout: async (): Promise<{ status: string; message: string }> => {
+  logout: async (): Promise<ApiResponse<{ success: boolean }>> => {
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
     const username = user ? JSON.parse(user).username : null;
 
-    try {
-      const res = await fetch(`${API_BASE}auth/logout`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ username }), // <-- send username in body
-      });
+    const res = await fetch(`${API_BASE}auth/logout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ username }),
+    });
 
-      return await res.json();
-    } catch (err: any) {
-      console.error("Logout request failed:", err);
-      return { status: "error", message: "Logout request failed" };
-    }
+    const data = (await res.json()) as ApiResponse<{ success: boolean }>;
+    if (!data.success) throw new Error(data.message || "Logout failed");
+    return data;
   },
 };
