@@ -16,13 +16,19 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
+
+      - name: Approve pnpm builds
+        run: pnpm approve-builds --all
 
       - name: Build project
-        run: npm run build
+        run: pnpm run build
 
       - name: Start dev server & ngrok
         run: |
-          npm run dev &
+          pnpm run dev &
           npx ngrok http 5173 --log=stdout
