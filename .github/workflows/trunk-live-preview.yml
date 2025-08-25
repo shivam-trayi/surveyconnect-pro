@@ -1,0 +1,34 @@
+name: Trunk Frontend Live Preview
+
+on:
+  push:
+    branches:
+      - trunk
+
+jobs:
+  live-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Approve pnpm builds
+        run: pnpm approve-builds --all
+
+      - name: Build project
+        run: pnpm run build
+
+      - name: Start dev server & ngrok
+        run: |
+          pnpm run dev &
+          npx ngrok http 5173 --log=stdout

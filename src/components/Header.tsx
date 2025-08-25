@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/hooks/useTheme';
+import { useAuth } from '@/context/AuthContext';
 
 const SunIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -37,7 +37,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { resolvedTheme, toggleTheme } = useTheme();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -96,7 +96,7 @@ export default function Header() {
           </motion.div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          {/* <nav className="hidden md:flex items-center space-x-8">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -133,7 +133,7 @@ export default function Header() {
             >
               Contact
             </motion.button>
-          </nav>
+          </nav> */}
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
@@ -267,7 +267,7 @@ export default function Header() {
               className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-md overflow-hidden"
             >
               <nav className="py-4 space-y-4">
-                <motion.button
+                {/* <motion.button
                   initial={{ x: -20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.1 }}
@@ -306,7 +306,7 @@ export default function Header() {
                 >
                   Contact
                 </motion.button>
-                
+                 */}
                 <div className="flex flex-col space-y-2 px-4 pt-4 border-t border-border/50">
                   {!isAuthenticated ? (
                     <>
